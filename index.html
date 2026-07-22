@@ -87,8 +87,13 @@
   .lang-switch{display:flex;gap:6px;font-size:0.75rem;font-weight:600;}
   .lang-switch button{padding:4px 10px;border:1px solid rgba(247,247,245,0.25);border-radius:2px;color:var(--branco);}
   .lang-switch button[aria-current="true"]{background:var(--verde);border-color:var(--verde);}
-  .nav-toggle{display:none;background:none;border:none;color:var(--branco);}
+  .nav-toggle{display:none;background:none;border:none;color:var(--branco);font-size:1.3rem;line-height:1;}
+  .mobile-nav{display:none;flex-direction:column;background:var(--preto);border-top:1px solid rgba(247,247,245,0.12);}
+  .mobile-nav.open{display:flex;}
+  .mobile-nav a{padding:15px var(--pad);font-size:0.95rem;font-weight:500;color:var(--branco);border-bottom:1px solid rgba(247,247,245,0.08);}
+  .mobile-nav a:active{background:rgba(18,128,28,0.12);}
   @media (max-width:860px){ nav{display:none;} .nav-toggle{display:block;} }
+  @media (min-width:861px){ .mobile-nav{display:none !important;} }
 
   .hero{position:relative;background:var(--branco);color:var(--preto);overflow:hidden;padding-block:80px 100px;}
   .hero-top{max-width:760px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;}
@@ -139,14 +144,14 @@
   @media (max-width:560px){ .process-steps{grid-template-columns:1fr;} }
 
   .gallery{background:var(--branco);padding-block:120px;}
-  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  .g-item{aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(18,128,28,0.3);background:var(--preto);}
-  .g-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease;}
+  .gallery-grid{column-count:4;column-gap:14px;}
+  .g-item{break-inside:avoid;margin-bottom:14px;position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(18,128,28,0.3);background:var(--preto);border-radius:4px;}
+  .g-item img{width:100%;height:auto;display:block;transition:transform .4s ease;}
   .g-item:hover img{transform:scale(1.06);}
   .g-item::after{content:"";position:absolute;inset:0;background:rgba(18,128,28,0.22);opacity:0;transition:opacity .3s ease;}
   .g-item:hover::after{opacity:1;}
-  @media (max-width:900px){ .gallery-grid{grid-template-columns:repeat(3,1fr);} }
-  @media (max-width:600px){ .gallery-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:900px){ .gallery-grid{column-count:3;} }
+  @media (max-width:600px){ .gallery-grid{column-count:2;} }
 
   .about{background:var(--branco);padding-block:120px;border-top:1px solid rgba(10,10,10,0.1);}
   .about-grid{display:grid;grid-template-columns:0.9fr 1.1fr;gap:70px;align-items:center;}
@@ -211,8 +216,14 @@
         <button type="button" data-lang-btn="es" aria-current="true">ES</button>
         <button type="button" data-lang-btn="pt">PT</button>
       </div>
-      <button class="nav-toggle" aria-label="Abrir menu">☰</button>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
     </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#servicios" data-i18n="nav-1">Servicios</a>
+    <a href="#galeria" data-i18n="nav-2">Proyectos</a>
+    <a href="#nosotros" data-i18n="nav-3">Nosotros</a>
+    <a href="#faq" data-i18n="nav-4">Preguntas</a>
   </div>
 </header>
 
@@ -674,6 +685,23 @@
   }
   document.getElementById("lightboxClose").addEventListener("click", closeLb);
   lightbox.addEventListener("keydown", function(e){ if(e.key === "Escape") closeLb(); });
+
+  var navToggle = document.getElementById("navToggle");
+  var mobileNav = document.getElementById("mobileNav");
+  if(navToggle && mobileNav){
+    navToggle.addEventListener("click", function(){
+      var isOpen = mobileNav.classList.toggle("open");
+      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      navToggle.textContent = isOpen ? "✕" : "☰";
+    });
+    mobileNav.querySelectorAll("a").forEach(function(link){
+      link.addEventListener("click", function(){
+        mobileNav.classList.remove("open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.textContent = "☰";
+      });
+    });
+  }
 })();
 </script>
 
